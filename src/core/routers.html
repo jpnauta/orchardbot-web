@@ -1,0 +1,46 @@
+<script>
+  let RouterMixin = function (superClass, {rootPath = '', defaultPage} = {}) {
+    return class extends superClass {
+      static get properties() {
+        return {
+          page: {
+            type: String,
+            reflectToAttribute: true,
+            observer: '_pageChanged',
+          },
+          routeData: Object,
+          subroute: String,
+          // This shouldn't be neccessary, but the Analyzer isn't picking up
+          // Polymer.Element#rootPath
+          rootPath: String,
+        };
+      }
+
+      static get observers() {
+        return [
+          '_routeDataChanged(routeData)',
+        ];
+      }
+
+      _routeDataChanged(routeData) {
+        // If no page was found in the route data, page will be an empty string.
+        // Deault to 'view1' in that case.
+        this.page = `${rootPath}${routeData.path || defaultPage}-view`;
+      }
+
+      _pageChanged(page) {
+        // Load page import on demand. Show 404 page if fails
+        var resolvedPageUrl = this.resolveUrl(`${page}.html`);
+        Polymer.importHref(
+          resolvedPageUrl,
+          null,
+          this._showPage404.bind(this),
+          true);
+      }
+
+      _showPage404() {
+        this.page = 'error-404-view';
+      }
+    }
+  }
+</script>

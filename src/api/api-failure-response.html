@@ -1,0 +1,47 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<script src="../../bower_components/lodash/dist/lodash.min.js"></script>
+
+<dom-module id="api-failure-response">
+  <template>
+    <style>
+      .failure {
+        color: var(--paper-red-900);
+      }
+    </style>
+
+    <template is="dom-if" if="[[isFailure(response)]]">
+      <span class="failure">
+        [[getErrorString(response)]]
+      </span>
+    </template>
+  </template>
+
+  <script>
+    class APIFailureResponse extends Polymer.Element {
+      static get is() {
+        return 'api-failure-response';
+      }
+
+      static get properties() {
+        return {
+          response: {
+            type: Object,
+            value: null
+          },
+        }
+      }
+
+      isFailure(response) {
+        return APIResource.isFailure(response);
+      }
+
+      getErrorString(response) {
+        return _.find(response.error.errors, (val, key) => {
+          return `${key}: ${val}`;
+        });
+      }
+    }
+
+    window.customElements.define(APIFailureResponse.is, APIFailureResponse);
+  </script>
+</dom-module>

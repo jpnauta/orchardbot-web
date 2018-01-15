@@ -1,0 +1,59 @@
+<!-- Shows "no connection" icon when socket is disconnected -->
+<link rel="import" href="../../shared/index.html">
+<link rel="import" href="../../core/ws/clients.html">
+
+<dom-module id="connection-icon">
+  <template>
+    <style>
+      .disconnected {
+        color: var(--paper-red-400);
+      }
+    </style>
+
+    <template is="dom-if" if="[[connected]]">
+      <iron-icon class="connected" icon="icons:cloud-queue">
+      </iron-icon>
+      <paper-tooltip position="left">
+        Connected
+      </paper-tooltip>
+    </template>
+
+    <template is="dom-if" if="[[!connected]]">
+      <iron-icon class="disconnected" icon="icons:cloud-queue">
+      </iron-icon>
+      <paper-tooltip position="left">
+        Disconnected
+      </paper-tooltip>
+    </template>
+  </template>
+
+  <script>
+    class ConnectionIcon extends Polymer.Element {
+      static get is() {
+        return 'connection-icon';
+      }
+
+      static get properties() {
+        return {
+          connected: Boolean,
+        };
+      }
+
+      ready() {
+        super.ready();
+
+        this.connected = false;
+
+        socket.on('connect', () => {
+          this.set('connected', true);
+        });
+
+        socket.on('disconnect', () => {
+          this.set('connected', false);
+        });
+      }
+    }
+
+    window.customElements.define(ConnectionIcon.is, ConnectionIcon);
+  </script>
+</dom-module>

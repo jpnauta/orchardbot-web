@@ -1,0 +1,35 @@
+<!-- Shows "no connection" icon when socket is disconnected -->
+<link rel="import" href="../../shared/index.html">
+<script src="../../../bower_components/moment/moment.js"></script>
+<script src="../../../bower_components/later/later.min.js"></script>
+<script src="../../../bower_components/prettycron/prettycron.js"></script>
+
+<dom-module id="pretty-cron">
+  <template>[[ message ]]</template>
+
+  <script>
+    class PrettyCron extends Polymer.Element {
+      static get is() {
+        return 'pretty-cron';
+      }
+
+      static get properties() {
+        return {
+          exp: {
+            type: String,
+            observer: '_expChanged',
+          },
+          message: {
+            type: String,
+          },
+        };
+      }
+
+      _expChanged(exp) {
+        this.set('message', prettyCron.toString(exp))
+      }
+    }
+
+    window.customElements.define(PrettyCron.is, PrettyCron);
+  </script>
+</dom-module>

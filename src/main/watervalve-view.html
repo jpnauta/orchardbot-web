@@ -1,0 +1,97 @@
+<link rel="import" href="../shared/index.html">
+<link rel="import" href="../core/ws/resources.html">
+<link rel="import" href="../core/elements/full-loader.html">
+<link rel="import" href="../../bower_components/moment-js/moment-js.html">
+<link rel="import" href="../../bower_components/iron-timeago/iron-timeago.html">
+<link rel="import" href="../api/api-response.html">
+
+<dom-module id="main-watervalve-view">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+
+        padding: 10px;
+      }
+    </style>
+
+    <div class="card">
+      <template is="dom-if" if="{{!watervalve}}">
+        <full-loader></full-loader>
+      </template>
+
+      <iron-form id="form">
+        <template is="dom-if" if="{{watervalve}}">
+          <form>
+            <h1>
+              Water Valve
+            </h1>
+            Last Updated:
+            <iron-timeago datetime="{{watervalve.updatedAt}}"></iron-timeago>
+            <div>
+              Current State: [[ watervalve.currentState ]]
+            </div>
+            <paper-dropdown-menu label="Desired State">
+              <paper-listbox slot="dropdown-content" class="dropdown-content"
+                             attr-for-selected="value" selected="{{watervalve.state}}">
+                <paper-item value="open">Open</paper-item>
+                <paper-item value="closed">Closed</paper-item>
+              </paper-listbox>
+            </paper-dropdown-menu>
+            <div>
+              <paper-button type="submit" raised on-click="submit">
+                Save
+              </paper-button>
+            </div>
+          </form>
+        </template>
+      </iron-form>
+
+      <api-success-response response="{{response}}"></api-success-response>
+      <api-failure-response response="{{response}}"></api-failure-response>
+    </div>
+  </template>
+
+  <script>
+    class MainWatervalveView extends Polymer.Element {
+      static get is() {
+        return 'main-watervalve-view';
+      }
+
+      static get properties() {
+        return {
+          watervalve: {
+            type: Object,
+            value: null
+          },
+          response: {
+            type: Object,
+            value: null
+          },
+        }
+      }
+
+      ready() {
+        super.ready();
+
+        // Retrieve watervalve
+        watervalveResource.listen((response) => {
+          if (APIResource.isSuccess(response)) {
+            this.set('watervalve', response.data);
+          }
+        });
+        watervalveResource.emit(null);  // Retrieve data for the first time
+      }
+
+      submit() {
+        let cb = (data) => {
+          this.set('response', data);
+        };
+
+        watervalveResource.set(this.watervalve).then(cb).catch(cb);
+      }
+    }
+
+    window.customElements.define(MainWatervalveView.is, MainWatervalveView);
+  </script>
+</dom-module>

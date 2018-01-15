@@ -1,0 +1,33 @@
+<link rel="import" href="../shared/index.html">
+
+<dom-module id="errors-404-view">
+  <template>
+    <style>
+      :host {
+        display: block;
+
+        padding: 10px 20px;
+      }
+    </style>
+
+    Oops you hit a 404. <a href="[[rootPath]]">Head back to home.</a>
+  </template>
+
+  <script>
+    class Errors404View extends Polymer.Element {
+      static get is() {
+        return 'errors-404-view';
+      }
+
+      static get properties() {
+        return {
+          // This shouldn't be necessary, but the Analyzer isn't picking up
+          // Polymer.Element#rootPath
+          rootPath: String,
+        };
+      }
+    }
+
+    window.customElements.define(Errors404View.is, Errors404View);
+  </script>
+</dom-module>

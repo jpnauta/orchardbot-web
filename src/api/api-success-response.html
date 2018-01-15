@@ -1,0 +1,44 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+
+<dom-module id="api-success-response">
+  <template>
+    <style>
+      .success {
+        color: var(--paper-green-900);
+      }
+    </style>
+
+    <template is="dom-if" if="[[isSuccess(response)]]">
+      <span class="success">
+        {{message}}
+      </span>
+    </template>
+  </template>
+
+  <script>
+    class APISuccessResponse extends Polymer.Element {
+      static get is() {
+        return 'api-success-response';
+      }
+
+      static get properties() {
+        return {
+          response: {
+            type: Object,
+            value: null
+          },
+          message: {
+            type: String,
+            value: 'Success!'
+          },
+        }
+      }
+
+      isSuccess(response) {
+        return APIResource.isSuccess(response);
+      }
+    }
+
+    window.customElements.define(APISuccessResponse.is, APISuccessResponse);
+  </script>
+</dom-module>

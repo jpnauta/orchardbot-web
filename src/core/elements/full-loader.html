@@ -1,0 +1,25 @@
+<link rel="import" href="../../../bower_components/paper-spinner/paper-spinner.html">
+
+<dom-module id="full-loader">
+  <template>
+    <style>
+      paper-spinner {
+        display: block;
+        margin: auto;
+        width: 100px;
+        height: 100px;
+      }
+    </style>
+    <paper-spinner active></paper-spinner>
+  </template>
+
+  <script>
+    class FullLoader extends Polymer.Element {
+      static get is() {
+        return 'full-loader';
+      }
+    }
+
+    window.customElements.define(FullLoader.is, FullLoader);
+  </script>
+</dom-module>

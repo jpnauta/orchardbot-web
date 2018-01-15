@@ -1,0 +1,97 @@
+<link rel="import" href="../shared/index.html">
+<link rel="import" href="../core/ws/resources.html">
+<link rel="import" href="../core/elements/full-loader.html">
+<link rel="import" href="../../bower_components/moment-js/moment-js.html">
+<link rel="import" href="../../bower_components/iron-timeago/iron-timeago.html">
+<link rel="import" href="../api/api-response.html">
+<link rel="import" href="../core/elements/pretty-cron.html">
+
+<dom-module id="main-waterschedule-view">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+
+        padding: 10px;
+      }
+    </style>
+
+    <div class="card">
+      <template is="dom-if" if="{{!waterschedule}}">
+        <full-loader></full-loader>
+      </template>
+
+      <iron-form id="form">
+        <template is="dom-if" if="{{waterschedule}}">
+          <form>
+            <h1>
+              Water Schedule
+            </h1>
+            Last Updated: <iron-timeago datetime="{{waterschedule.updatedAt}}"></iron-timeago>
+            <paper-input label="Open Cron" value="{{waterschedule.openCron}}"></paper-input>
+            <div>
+              Open valve at
+              <pretty-cron exp="[[ waterschedule.openCron ]]"></pretty-cron>
+            </div>
+            <paper-input label="Close Cron" value="{{waterschedule.closeCron}}"></paper-input>
+            <div>
+              Close valve at
+              <pretty-cron exp="[[ waterschedule.closeCron ]]"></pretty-cron>
+            </div>
+            <div>
+              <paper-button type="submit" raised on-click="submit">
+                Save
+              </paper-button>
+            </div>
+          </form>
+        </template>
+      </iron-form>
+
+      <api-success-response response="{{response}}"></api-success-response>
+      <api-failure-response response="{{response}}"></api-failure-response>
+    </div>
+  </template>
+
+  <script>
+    class MainWaterscheduleView extends Polymer.Element {
+      static get is() {
+        return 'main-waterschedule-view';
+      }
+
+      static get properties() {
+        return {
+          waterschedule: {
+            type: Object,
+            value: null
+          },
+          response: {
+            type: Object,
+            value: null
+          },
+        }
+      }
+
+      ready() {
+        super.ready();
+
+        // Retrieve waterschedule
+        waterscheduleResource.listen((response) => {
+          if (APIResource.isSuccess(response)) {
+            this.set('waterschedule', response.data);
+          }
+        });
+        waterscheduleResource.emit(null);  // Retrieve data for the first time
+      }
+
+      submit() {
+        let cb = (data) => {
+          this.set('response', data);
+        };
+
+        waterscheduleResource.set(this.waterschedule).then(cb).catch(cb);
+      }
+    }
+
+    window.customElements.define(MainWaterscheduleView.is, MainWaterscheduleView);
+  </script>
+</dom-module>
