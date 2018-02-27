@@ -11,7 +11,6 @@
 To install the required dependencies, simply run this command
 
 ```
-npm install -g gulp  # Gulp CLI
 npm install -g polymer-cli  # Polymer CLI
 npm install  # NPM dependencies
 ```
@@ -21,7 +20,7 @@ npm install  # NPM dependencies
 This command will start a local development server
 
 ```
-gulp serve
+npm run serve
 ```
 
 ## Testing
@@ -29,7 +28,7 @@ gulp serve
 Use this command to run all tests
 
 ```
-gulp test
+npm run test
 ```
 
 ## Deploying
@@ -37,13 +36,13 @@ gulp test
 To build a production-ready version of this project, run this command
 
 ```
-gulp build
+npm run build
 ```
 
 The contents of `build/es5-bundled` can be exported and ran using
 the command
 
 ```
-polymer serve
+npm run serve:dist
 ```
 
